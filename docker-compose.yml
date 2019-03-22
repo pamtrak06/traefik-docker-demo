@@ -1,0 +1,58 @@
+version: '3.7'
+
+volumes:
+  data-web1:
+  data-web2:
+
+networks:
+  web:
+    external: true
+
+services:
+
+  web1:
+    image: httpd:2.4
+    #command: "echo \"web1\" > /usr/local/apache2/htdocs/index.html && httpd-foreground"
+    #ports:
+    #  - 8060:80
+    volumes:
+      - data-web1:/usr/local/apache2/htdocs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=web1"
+      - "traefik.docker.network=web"
+      - "traefik.frontend.rule=Host:web1.docker.local;PathPrefixStrip:/web1/"
+      #- "traefik.port=8080"
+    networks:
+      - web
+
+  web2:
+    image: httpd:2.4
+    #command: "echo \"web2\" > /usr/local/apache2/htdocs/index.html && httpd-foreground"
+    #ports:
+    #  - 8070:80
+    volumes:
+      - data-web2:/usr/local/apache2/htdocs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=web2"
+      - "traefik.docker.network=web"
+      - "traefik.frontend.rule=Host:web2.docker.local;PathPrefixStrip:/web2/"
+      #- "traefik.port=8080"
+    networks:
+      - web
+
+  traefik:
+    image: traefik
+    restart: always
+    command: --web --docker --logLevel=DEBUG
+    ports:
+      - 8080:8080
+      #- 443:443
+      - 80:80
+    volumes:
+      - $PWD/traefik.toml:/etc/traefik/traefik.toml
+      #- $PWD/acme.json:/acme.json
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - web
