@@ -21,7 +21,7 @@ services:
       - "traefik.enable=true"
       - "traefik.backend=web1"
       - "traefik.docker.network=web"
-      - "traefik.frontend.rule=Host:web1.docker.local;PathPrefixStrip:/web1/"
+      - "traefik.frontend.rule=Host:docker.local;PathPrefixStrip:/web1/"
       #- "traefik.port=8080"
     networks:
       - web
@@ -37,7 +37,7 @@ services:
       - "traefik.enable=true"
       - "traefik.backend=web2"
       - "traefik.docker.network=web"
-      - "traefik.frontend.rule=Host:web2.docker.local;PathPrefixStrip:/web2/"
+      - "traefik.frontend.rule=Host:docker.local;PathPrefixStrip:/web2/"
       #- "traefik.port=8080"
     networks:
       - web
